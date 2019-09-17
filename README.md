@@ -1,4 +1,4 @@
-# lecture-9-react
+# lecture-13-buttons (same instructions as lecture-9-react)
 
 Let's get React up and running with Flask. Run these commands in your Project 2 (or scratch) folder.
 
