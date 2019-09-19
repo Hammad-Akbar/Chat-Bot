@@ -37,9 +37,11 @@ Open a new terminal in your AWS Cloud9 environment (click the little green + but
 **Do not manually edit `static/script.js`! It will update when you make changes. You do need to push this file to Heroku and GitHub**
 
 ## Remember
-Your webpack should still be running in the other terminal (and some logs will spit out) when you run your Python File. Try previewing the changes in the Preview Window in AWS. Notice that nothing is updating. You need to click 'Pop out to New Window', and hard refresh the browser (see command below). 
-
-PS This is a known problem for a bunch of people. Unfortunately, there is no known fix besides turning off the cache option for the whole browser (which we don't want to do).
 
 **You will always need to do a hard refresh (Ctrl+R/Cmd+Shift+R) of an external tab in your browser (while Webpack is running) to see changes**
 
+**Remove the 's' from your URL bar "https://..." in your external browser for websocket to work!**
+
+Your webpack should still be running in the other terminal (and some logs will spit out) when you run your Python File. Try previewing the changes in the Preview Window in AWS. Notice that nothing is updating. You need to click 'Pop out to New Window', and hard refresh the browser (see command below). 
+
+PS This is a known problem for a bunch of people. Unfortunately, there is no known fix besides turning off the cache option for the whole browser (which we don't want to do).
