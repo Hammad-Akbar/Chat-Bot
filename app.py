@@ -20,7 +20,6 @@ def on_disconnect():
 @socketio.on('new number')
 def on_new_number(data):
     print "Got an event for new number with data:", data
-    # TODO: Fill me out!
     rand_number = data['number']
     socketio.emit('number received', {
         'number': rand_number
