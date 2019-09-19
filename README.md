@@ -1,4 +1,5 @@
-# lecture-13-buttons (same React instructions as lecture-9-react). Make sure you install Socket.io libraries from slides)
+# lecture-13-buttons (same React instructions as lecture-9-react). Make sure you install Socket.io libraries from slides.
+
 
 Let's get React up and running with Flask. Run these commands in your Project 2 (or scratch) folder.
 
