@@ -11,15 +11,15 @@ def hello():
 
 @socketio.on('connect')
 def on_connect():
-    print 'Someone connected!'
+    print('Someone connected!')
 
 @socketio.on('disconnect')
 def on_disconnect():
-    print 'Someone disconnected!'
+    print ('Someone disconnected!')
 
 @socketio.on('new number')
 def on_new_number(data):
-    print "Got an event for new number with data:", data
+    print("Got an event for new number with data:", data)
     rand_number = data['number']
     socketio.emit('number received', {
         'number': rand_number
