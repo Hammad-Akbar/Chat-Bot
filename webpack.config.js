@@ -1,14 +1,14 @@
 module.exports = {
-    entry: "./scripts/Main.js",
+    entry: "./scripts/Main.jsx",
     output: {
         path: __dirname,
         filename: "./static/script.js"
     },
     module: {
-        loaders: [
+        rules: [
             { test: /\.css$/, loader: "style!css" },
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /(node_modules)/,
                 loader: 'babel-loader',
                 query: {
@@ -16,5 +16,8 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    resolve: {
+    extensions: ['.js', '.jsx'],
+  }
 };
