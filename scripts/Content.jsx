@@ -1,33 +1,29 @@
     
 import * as React from 'react';
 
+
 import { Button } from './Button';
 import { Socket } from './Socket';
 
-export class Content extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            'numbers': []
-        };
+export function Content() {
+    const [number, setNumber] = React.useState(0);
+    
+    function newNumber() {
+        React.useEffect(() => {
+            Socket.on('number received', (data) => {
+                console.log("Received number from server: " + data['number']);
+                setNumber(data['number']);
+            })
+        });
     }
     
-    componentDidMount() {
-        Socket.on('number received', (data) => {
-            this.setState({
-                'number_received': data['number']
-            });
-        })
-    }
+    newNumber();
 
-    render() {
-        let my_rand_num = this.state.number_received
-        return (
-            <div>
-                <h1>Random number!</h1>
-                <ul>{my_rand_num}</ul>
-                <Button />
-            </div>
-        );
-    }
+    return (
+        <div>
+            <h1>Random number!</h1>
+            <span>{number}</span>
+            <Button />
+        </div>
+    );
 }
