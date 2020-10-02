@@ -6,6 +6,7 @@
   c) `pip install eventlet`  
   d) `npm install -g webpack`  
   e) `npm install --save-dev webpack`  
+  f) `npm install socket.io-client --save`  
 If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install`
 2. Run your code!  
   a) `npm run watch`  
