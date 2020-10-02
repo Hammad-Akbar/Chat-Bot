@@ -11,7 +11,7 @@ export function Content() {
     function newNumber() {
         React.useEffect(() => {
             Socket.on('number received', (data) => {
-                console.log("Received number from server: " + data['number']);
+                console.log("Received a number from server: " + data['number']);
                 setNumber(data['number']);
             })
         });
