@@ -9,8 +9,8 @@
   f) `npm install socket.io-client --save`  
 If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install`
 2. Run your code!  
-  a) `npm run watch`  
-  b) `python app.py`  
+  a) `npm run watch`. If prompted to install webpack-cli, type "yes"  
+  b) In a new terminal, `python app.py`  
   c) Preview Running Application (might have to clear your cache by doing a hard refresh)  
 3. Play with the app by clicking the button and seeing what happens!  
 4. Answer the following questions:  
