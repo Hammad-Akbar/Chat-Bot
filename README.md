@@ -1,11 +1,12 @@
 # Lecture 10 - Socket.io
-0. `cd ~/environment` and git clone https://github.com/Sresht/lect10-socket/ and `cd lect10-socket`  
+0. `cd ~/environment && git clone https://github.com/Sresht/lect10-socket/ && cd lect10-socket`  
 1. Install your stuff!  
   a) `npm install`  
   b) `pip install flask-socketio`  
   c) `pip install eventlet`  
   d) `npm install -g webpack`  
   e) `npm install --save-dev webpack`  
+If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install`
 2. Run your code!  
   a) `npm run watch`  
   b) `python app.py`  
