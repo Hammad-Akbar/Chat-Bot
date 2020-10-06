@@ -36,8 +36,13 @@ def index():
         db.session.add(address)
     db.session.commit()
     
-    return flask.render_template("index.html")
+    retstr = "<html><ul>"
+    dbaddresses = models.Usps.query.all()
+    for dbaddress in dbaddresses:
+        retstr += "<li>"+ dbaddress.address + "</li>"
+    retstr += "</ul></html>"
     
+    return retstr
     
 if __name__ == '__main__':
     app.run(
