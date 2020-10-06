@@ -26,7 +26,7 @@ def index():
     for address in addresses:
         html += "<h1>{}</h1>".format(address.address)
     html += "\n"
-    return html
+    return flask.render_template("index.html")
     
     
 if __name__ == '__main__':
