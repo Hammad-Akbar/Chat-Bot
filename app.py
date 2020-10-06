@@ -21,11 +21,6 @@ def index():
         db.session.add(address)
     db.session.commit()
     
-    addresses = models.Usps.query.all()
-    html = "<html>"
-    for address in addresses:
-        html += "<h1>{}</h1>".format(address.address)
-    html += "\n"
     return flask.render_template("index.html")
     
     
