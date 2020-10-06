@@ -6,23 +6,25 @@ import { Button } from './Button';
 import { Socket } from './Socket';
 
 export function Content() {
-    const [number, setNumber] = React.useState(0);
+    const [addresses, setAddresses] = React.useState([]);
     
-    function newNumber() {
+    function getNewAddresses() {
         React.useEffect(() => {
-            Socket.on('number received', (data) => {
-                console.log("Received a number from server: " + data['number']);
-                setNumber(data['number']);
+            Socket.on('addresses received', (data) => {
+                console.log("Received addresses from server: " + data['newAddresses']);
+                setAddresses(data['newAddresses']);
             })
         });
     }
     
-    newNumber();
+    getNewAddresses();
 
     return (
         <div>
-            <h1>Random number!</h1>
-            <span>{number}</span>
+            <h1>Addresses!</h1>
+                <ol>
+                    {addresses.map(address => <li>{address}</li>)}
+                </ol>
             <Button />
         </div>
     );
