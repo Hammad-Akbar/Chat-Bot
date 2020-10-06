@@ -2,14 +2,12 @@ import * as React from 'react';
 import { Socket } from './Socket';
 
 function handleSubmit(event) {
-    let random = Math.floor(Math.random() * 100);
-    console.log('Generated a random number: ', random);
-    
-    Socket.emit('new number', {
-        'number': random,
+    let newAddress = document.getElementById("address_input").value;
+    Socket.emit('new address', {
+        'address': newAddress,
     });
     
-    console.log('Sent a random number ' + random + ' to server!');
+    console.log('Sent the address ' + newAddress + ' to server!');
 
     event.preventDefault();
 }
@@ -17,7 +15,8 @@ function handleSubmit(event) {
 export function Button() {
     return (
         <form onSubmit={handleSubmit}>
-            <button>Send up a random number!</button>
+            <input id="address_input" placeholder="Enter an address"></input>
+            <button>Add to DB!</button>
         </form>
     );
 }

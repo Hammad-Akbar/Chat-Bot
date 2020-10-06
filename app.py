@@ -25,6 +25,33 @@ db.app = app
 
 import models 
 
+import os
+import flask
+import flask_socketio
+
+app = flask.Flask(__name__)
+socketio = flask_socketio.SocketIO(app)
+socketio.init_app(app, cors_allowed_origins="*")
+
+@socketio.on('connect')
+def on_connect():
+    print('Someone connected!')
+    socketio.emit('connected', {
+        'test': 'Connected'
+    })
+
+@socketio.on('disconnect')
+def on_disconnect():
+    print ('Someone disconnected!')
+
+@socketio.on('new number')
+def on_new_number(data):
+    print("Got an event for new number with data:", data)
+    rand_number = data['number']
+    socketio.emit('number received', {
+        'number': rand_number
+    })
+
 @app.route('/')
 def index():
     models.db.create_all()
@@ -36,17 +63,13 @@ def index():
         db.session.add(address)
     db.session.commit()
     
-    retstr = "<html><ul>"
-    dbaddresses = models.Usps.query.all()
-    for dbaddress in dbaddresses:
-        retstr += "<li>"+ dbaddress.address + "</li>"
-    retstr += "</ul></html>"
-    
-    return retstr
-    
-if __name__ == '__main__':
-    app.run(
+    return flask.render_template("index.html")
+
+if __name__ == '__main__': 
+    socketio.run(
+        app,
         host=os.getenv('IP', '0.0.0.0'),
         port=int(os.getenv('PORT', 8080)),
         debug=True
     )
+
