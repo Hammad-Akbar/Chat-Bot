@@ -1,37 +1,36 @@
+# app.py
 import os
 import flask
-import flask_socketio
+import flask_sqlalchemy
 
 app = flask.Flask(__name__)
-socketio = flask_socketio.SocketIO(app)
-socketio.init_app(app, cors_allowed_origins="*")
+db = flask_sqlalchemy.SQLAlchemy(app)
+
+import models  # this needs to be here
+# notice the SQL_ALCHEMY_CONFIG is removed.
+
 
 @app.route('/')
-def hello():
-    return flask.render_template('index.html')
-
-@socketio.on('connect')
-def on_connect():
-    print('Someone connected!')
-    socketio.emit('connected', {
-        'test': 'Connected'
-    })
-
-@socketio.on('disconnect')
-def on_disconnect():
-    print ('Someone disconnected!')
-
-@socketio.on('new number')
-def on_new_number(data):
-    print("Got an event for new number with data:", data)
-    rand_number = data['number']
-    socketio.emit('number received', {
-        'number': rand_number
-    })
-
-if __name__ == '__main__': 
-    socketio.run(
-        app,
+def index():
+    models.db.create_all()
+    addresses = [
+        models.Usps("1600 Pennsylvania"),
+        models.Usps("121 W 21st Ave"),
+        models.Usps("NJIT GITC")]
+    for address in addresses:
+        db.session.add(address)
+    db.session.commit()
+    
+    addresses = models.Usps.query.all()
+    html = "<html>"
+    for address in addresses:
+        html += "<h1>{}</h1>".format(address.address)
+    html += "\n"
+    return html
+    
+    
+if __name__ == '__main__':
+    app.run(
         host=os.getenv('IP', '0.0.0.0'),
         port=int(os.getenv('PORT', 8080)),
         debug=True
