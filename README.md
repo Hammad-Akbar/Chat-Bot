@@ -1,5 +1,5 @@
 # Set up React  
-0. `cd ~/environment && git clone https://github.com/Sresht/lect10-socket/ && cd lect10-socket`    
+0. `cd ~/environment && git clone https://github.com/Sresht/lect11/ && cd lect11`    
 1. Install your stuff!    
   a) `npm install`    
   b) `pip install flask-socketio`    
@@ -8,10 +8,6 @@
   e) `npm install --save-dev webpack`    
   f) `npm install socket.io-client --save`    
 If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install`  
-2. Run your code!    
-  a) `npm run watch`. If prompted to install webpack-cli, type "yes"    
-  b) In a new terminal, `python app.py`    
-  c) Preview Running Application (might have to clear your cache by doing a hard refresh)    
   
 # Getting PSQL to work with Python  
   
@@ -19,7 +15,6 @@ If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it
 2. Upgrade pip: `sudo /usr/local/bin/pip install --upgrade pip`  
 3. Get psycopg2: `sudo /usr/local/bin/pip install psycopg2-binary`    
 4. Get SQLAlchemy: `sudo /usr/local/bin/pip install Flask-SQLAlchemy==2.1`    
-5. Clone this repository: `git clone https://github.com/Sresht/lect11`    
   
 # Setting up PSQL  
   
@@ -37,8 +32,8 @@ If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it
     c) `\l` look for ec2-user as a database    
 7. Make a new user:    
     a) `psql` (if you already quit out of psql)    
-    b) REPLACE THE [VALUES] IN THIS COMMAND! Type this with a new (short) unique password.   
-        I recommend 4-5 characters - it doesn't have to be very secure. Remember this password!  
+    ## REPLACE THE [VALUES] IN THIS COMMAND! Type this with a new (short) unique password.   
+    b) I recommend 4-5 characters - it doesn't have to be very secure. Remember this password!  
         `create user [some_username_here] superuser password '[some_unique_new_password_here]';`    
     c) `\q` to quit out of sql    
 8. `cd` into `lect11` and make a new file called `sql.env` and add `SQL_USER=` and `SQL_PASSWORD=` in it  
@@ -51,4 +46,7 @@ There's a special file that you need to enable your db admin password to work fo
 2. Replace all values of `ident` with `trust` in Vim: `:%s/ident/trust/g`  
 3. After changing those lines, run `sudo service postgresql restart`  
 4. Ensure that `sql.env` has the username/password of the superuser you created!  
-5. Now run `python app.py` and open the preview. You should see no problems!  
+5. Run your code!    
+  a) `npm run watch`. If prompted to install webpack-cli, type "yes"    
+  b) In a new terminal, `python app.py`    
+  c) Preview Running Application (might have to clear your cache by doing a hard refresh)    
