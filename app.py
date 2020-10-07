@@ -4,9 +4,15 @@ from dotenv import load_dotenv
 import os
 import flask
 import flask_sqlalchemy
+import flask_socketio
+import models 
+
+ADDRESSES_RECEIVED_CHANNEL = 'addresses received'
 
 app = flask.Flask(__name__)
 
+socketio = flask_socketio.SocketIO(app)
+socketio.init_app(app, cors_allowed_origins="*")
 
 dotenv_path = join(dirname(__file__), 'sql.env')
 load_dotenv(dotenv_path)
@@ -21,20 +27,12 @@ database_uri = 'postgresql://{}:{}@localhost/postgres'.format(
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 db = flask_sqlalchemy.SQLAlchemy(app)
+db.init_app(app)
 db.app = app
 
-import models 
 
-import os
-import flask
-import flask_socketio
-
-ADDRESSES_RECEIVED_CHANNEL = 'addresses received'
-
-
-app = flask.Flask(__name__)
-socketio = flask_socketio.SocketIO(app)
-socketio.init_app(app, cors_allowed_origins="*")
+db.create_all()
+db.session.commit()
 
 def emit_all_addresses(channel):
     all_addresses = [ \
@@ -71,9 +69,6 @@ def on_new_address(data):
 
 @app.route('/')
 def index():
-    models.db.create_all()
-    db.session.commit()
-    
     emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
 
     return flask.render_template("index.html")
