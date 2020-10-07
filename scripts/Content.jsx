@@ -11,8 +11,8 @@ export function Content() {
     function getNewAddresses() {
         React.useEffect(() => {
             Socket.on('addresses received', (data) => {
-                console.log("Received addresses from server: " + data['newAddresses']);
-                setAddresses(data['newAddresses']);
+                console.log("Received addresses from server: " + data['allAddresses']);
+                setAddresses(data['allAddresses']);
             })
         });
     }
