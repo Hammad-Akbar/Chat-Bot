@@ -29,10 +29,22 @@ import os
 import flask
 import flask_socketio
 
+ADDRESSES_RECEIVED_CHANNEL = 'addresses received'
+
+
 app = flask.Flask(__name__)
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
-all_addresses =  []
+
+def emit_all_addresses(channel):
+    all_addresses = [ \
+        db_address.address for db_address \
+        in db.session.query(models.Usps).all()]
+        
+    socketio.emit(channel, {
+        'allAddresses': all_addresses
+    })
+
 
 @socketio.on('connect')
 def on_connect():
@@ -40,6 +52,9 @@ def on_connect():
     socketio.emit('connected', {
         'test': 'Connected'
     })
+    
+    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
+    
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -48,25 +63,19 @@ def on_disconnect():
 @socketio.on('new address input')
 def on_new_address(data):
     print("Got an event for new address input with data:", data)
-    global all_addresses
-    all_addresses.append(data['address'])
-    print("All addresses are: " + str(all_addresses))
     
-    socketio.emit('addresses received', {
-        'allAddresses': all_addresses
-    })
+    db.session.add(models.Usps(data["address"]));
+    db.session.commit();
+    
+    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
 
 @app.route('/')
 def index():
     models.db.create_all()
-    addresses = [
-        models.Usps("1600 Pennsylvania"),
-        models.Usps("121 W 21st Ave"),
-        models.Usps("NJIT GITC")]
-    for address in addresses:
-        db.session.add(address)
     db.session.commit()
     
+    emit_all_addresses(ADDRESSES_RECEIVED_CHANNEL)
+
     return flask.render_template("index.html")
 
 if __name__ == '__main__': 
@@ -76,4 +85,3 @@ if __name__ == '__main__':
         port=int(os.getenv('PORT', 8080)),
         debug=True
     )
-
