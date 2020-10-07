@@ -7,7 +7,7 @@
   d) `npm install -g webpack`    
   e) `npm install --save-dev webpack`    
   f) `npm install socket.io-client --save`    
-If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install`  
+:warning: :warning: :warning: If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it says "pip cannot be found", run `which pip` and use `sudo [path to pip from which pip] install` :warning: :warning: :warning:    
   
 # Getting PSQL to work with Python  
   
@@ -23,9 +23,9 @@ If you see any error messages, make sure you use `sudo pip` or `sudo npm`. If it
 2. Initialize PSQL database: `sudo service postgresql initdb`    
 3. Start PSQL: `sudo service postgresql start`    
 4. Make a new superuser: `sudo -u postgres createuser --superuser $USER`    
-    If you get an error saying "could not change directory", that's okay! It worked!  
+    :warning: :warning: :warning: If you get an error saying "could not change directory", that's okay! It worked! :warning: :warning: :warning:    
 5. Make a new database: `sudo -u postgres createdb $USER`    
-        If you get an error saying "could not change directory", that's okay! It worked!  
+        :warning: :warning: :warning: If you get an error saying "could not change directory", that's okay! It worked! :warning: :warning: :warning:    
 6. Make sure your user shows up:    
     a) `psql`    
     b) `\du` look for ec2-user as a user    
