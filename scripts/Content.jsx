@@ -23,8 +23,9 @@ export function Content() {
         <div>
             <h1>USPS Addresses!</h1>
                 <ol>
-                    {addresses.map((address, index) =>
-                        <li key={index}>{address}</li>)}
+                    {
+                    // TODO
+                    }
                 </ol>
             <Button />
         </div>

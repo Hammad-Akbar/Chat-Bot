@@ -3,9 +3,7 @@ import { Socket } from './Socket';
 
 function handleSubmit(event) {
     let newAddress = document.getElementById("address_input");
-    Socket.emit('new address input', {
-        'address': newAddress.value,
-    });
+    // TODO
     
     console.log('Sent the address ' + newAddress.value + ' to server!');
     newAddress.value = ''
