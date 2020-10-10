@@ -27,6 +27,13 @@ db.app = app
 db.create_all()
 db.session.commit()
 
+def clear_data():
+    session = db.session()
+    f = session.query(models.MessageLog).delete()
+    print('records deleted:',f)
+    session.commit()
+    session.close()
+    
 def emit_all_messagees(channel):
     #content.jsx is looking for a key called allmessagees, so we want to emit to all messagees 
     all_messagees = [ \
@@ -54,8 +61,47 @@ def on_disconnect():
 @socketio.on('new message input')
 def on_new_message(data):
     print("Got an event for new message input with data:", data)
+    text = data["message"]
     
-    db.session.add(models.MessageLog(data["message"]));
+    if text == "!! about":
+        text = "This is a chat app made with React."
+    
+    elif text == "!! help":
+        text = "These are the following commands you can use: "
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
+        text = "!! about    ->  learn about me"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
+        text = "!! help     ->  list of commands"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
+        text = "!! english  ->  translate text into old english"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
+        text = "!! clear    ->  clear chat log"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
+        text = ""
+    
+    elif text == "!! english":
+        text = "TODO"
+    
+    elif text == "!! clear":
+        text = "Type '!! clear yes' to clear all messages"
+    
+    elif text == "!! clear yes":
+        clear_data()
+        
+    elif text.startswith("!!"):
+        text = "Not a valid command"
+    
+    db.session.add(models.MessageLog(text));
     db.session.commit();
     
     emit_all_messagees(MESSAGES_RECEIVED_CHANNEL)
