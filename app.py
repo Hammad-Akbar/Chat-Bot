@@ -6,6 +6,8 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models 
+import requests
+import json
 
 MESSAGES_RECEIVED_CHANNEL = 'messagees received'
 
@@ -83,22 +85,44 @@ def on_new_message(data):
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
+        text = "!! norris  ->  get a random Chuck Norris Joke"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+        
         text = "!! clear    ->  clear chat log"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
         text = ""
     
-    elif text == "!! english":
-        text = "TODO"
-    
+    elif text.startswith("!! english "):
+        try:
+            text = text.strip("!! english ")
+            text = text.replace(" ", "%20")
+            url = "https://api.funtranslations.com/translate/oldenglish.json?text={}".format(text)
+            response = requests.get(url)
+            json_body = response.json()
+            text = json.dumps(json_body["contents"]["translated"], indent = 2)
+            text = text.replace("\\\\", "\\")
+            
+        except KeyError:
+            text = "Sorry the translator is broken"
+        
     elif text == "!! clear":
         text = "Type '!! clear yes' to clear all messages"
     
     elif text == "!! clear yes":
         clear_data()
         
-    elif text.startswith("!!"):
+    elif text == "!! norris":
+        url = "https://api.chucknorris.io/jokes/random"
+        response = requests.get(url)
+        json_body = response.json()
+        text = json.dumps(json_body["value"], indent = 2)
+        text.strip('"')
+        
+        
+    elif text.startswith("!! "):
         text = "Not a valid command"
     
     db.session.add(models.MessageLog(text));
