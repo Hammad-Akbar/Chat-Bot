@@ -1,16 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Bowlby+One+SC');
+@import url('https://fonts.googleapis.com/css?family=Grandstander');
+
 .App {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
+  background-color: papayawhip;
 }
 
 .App-header {
-  background-color: #262626;
+  font-family: 'Bowlby One SC', cursive;
+  color: papayawhip;
+  background-color: steelblue;
   overflow: visible;
   width: 100%;
   text-align: center;
-  color: white;
 }
 
 ol {
@@ -25,51 +30,32 @@ ol {
 }
 
 li {
+  font-family: "Helvetica Neue Light", sans-serif;
+  color: darkslategray;
+  font-size: 14;
+  background-color: lightblue;
+  text-align: left;
+  width: 35%;
+  margin: 0 auto;
+  padding: 1em;
+  border-radius: 25px;
   display: flex;
-  margin-top: 10px;
+  position: relative;
+  margin-top: 20px;
+  left: -30%;
 }
 
-li.currentMember {
-  /*justify-content: flex-end;*/
-  flex-direction: row-reverse;
-  text-align: right;
+.botName {
+  font-family: 'Bowlby One SC', cursive;
+  color: black;
+  font-size: 14;
 }
 
-.Message-content {
-  display: inline-block;
-}
-
-.currentMember > .Message-content {
-  align-items: flex-end;
-}
-
-li > .avatar {
-  height: 35px;
-  width: 35px;
-  border-radius: 50%;
-  display: inline-block;
-  margin: 0 10px -10px;
-}
-
-.Message-content > .username {
-  display: block;
-  color: gray;
-  font-size: 14px;
-  padding-bottom: 4px;
-}
-
-.Message-content > .text {
-  padding: 10px;
-  max-width: 400px;
-  margin: 0;
-  border-radius: 12px;
-  background-color: cornflowerblue;
-  color: white;
-  display: inline-block;
-}
-
-.currentMember > .Message-content .text {
-  background-color: orangered;
+.message {
+  text-align: left;
+  margin-top: 10;
+  position: relative;
+  left: -35%;
 }
 
 form {
@@ -84,15 +70,15 @@ input {
   padding: 5px;
   font-size: 16px;
   border-radius: 8px;
-  border: 1px solid orangered;
+  border: 1px solid steelblue;
   flex-grow: 1;
 }
 
 button {
   padding: 5px 10px;
   font-size: 16px;
-  background-color: orangered;
-  color: white;
+  background-color: steelblue;
+  color: papayawhip;
   border: none;
   border-radius: 8px;
   margin-left: 10px;

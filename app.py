@@ -81,7 +81,7 @@ def on_new_message(data):
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! english  ->  translate text into old english"
+        text = "!! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
@@ -92,27 +92,26 @@ def on_new_message(data):
         text = "!! clear    ->  clear chat log"
         db.session.add(models.MessageLog(text));
         db.session.commit();
-        
-        text = ""
     
-    elif text.startswith("!! english "):
+    elif text.startswith("!! translate "):
         try:
-            text = text.strip("!! english ")
+            text = text.strip("!! translate ")
             text = text.replace(" ", "%20")
-            url = "https://api.funtranslations.com/translate/oldenglish.json?text={}".format(text)
+            url = "https://api.funtranslations.com/translate/pirate.json?text={}".format(text)
             response = requests.get(url)
             json_body = response.json()
             text = json.dumps(json_body["contents"]["translated"], indent = 2)
             text = text.replace("\\\\", "\\")
             
         except KeyError:
-            text = "Sorry the translator is broken"
+            text = "Sorry the translator is broken. Try again later."
         
     elif text == "!! clear":
         text = "Type '!! clear yes' to clear all messages"
     
     elif text == "!! clear yes":
         clear_data()
+        text = "Successfully cleared all messages."
         
     elif text == "!! norris":
         url = "https://api.chucknorris.io/jokes/random"

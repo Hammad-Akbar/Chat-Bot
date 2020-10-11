@@ -50,19 +50,18 @@ export function Content() {
     
     getNewMessagees();
 
-    const name = randomName();
+    const name = "autumn_wind";
     
     return (
-        <div>
+        <div className="App">
             <div className="App-header">
-              <h1>Welcome to the chatroom!</h1>
+              <h1>Welcome to the Chatroom!</h1>
             </div>
                 <ol>
-                    <h3> { name } </h3>
                     {
                         messagees.map(
                             (message, index) =>
-                                <li key={index}> {message} </li>
+                                <li key={index}> <div className="botName"> {name.toUpperCase()}: </div> <div className="message"><p>{message}</p></div> </li>
                         )
                     }
                 </ol>
