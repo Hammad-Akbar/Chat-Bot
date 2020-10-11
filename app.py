@@ -107,9 +107,6 @@ def on_new_message(data):
             text = "Sorry the translator is broken. Try again later."
         
     elif text == "!! clear":
-        text = "Type '!! clear yes' to clear all messages"
-    
-    elif text == "!! clear yes":
         clear_data()
         text = "Successfully cleared all messages."
         

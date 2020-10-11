@@ -31,7 +31,7 @@ function randomName() {
   ];
   const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  const name = adjective + "_" + noun;
+  const name = adjective + "_" + noun + " (BOT)";
   return name;
 }
 
@@ -50,7 +50,7 @@ export function Content() {
     
     getNewMessagees();
 
-    const name = "autumn_wind(BOT)";
+    const name = "autumn_wind (BOT)";
     
     return (
         <div className="App">
