@@ -90,8 +90,6 @@ def on_new_message(data):
         db.session.commit();
         
         text = "!! clear    ->  clear chat log"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
     
     elif text.startswith("!! translate "):
         try:
