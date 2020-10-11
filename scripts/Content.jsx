@@ -50,7 +50,7 @@ export function Content() {
     
     getNewMessagees();
 
-    const name = "autumn_wind";
+    const name = "autumn_wind(BOT)";
     
     return (
         <div className="App">
