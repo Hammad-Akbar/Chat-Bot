@@ -106,7 +106,7 @@ def on_new_message(data):
         
     elif text == "!! clear":
         clear_data()
-        text = "Successfully cleared all messages."
+        text = ""
         
     elif text == "!! norris":
         url = "https://api.chucknorris.io/jokes/random"

@@ -45,6 +45,22 @@ li {
   left: -30%;
 }
 
+.messageSent {
+  font-family: "Helvetica Neue Light", sans-serif;
+  color: darkslategray;
+  font-size: 14;
+  background-color: lightblue;
+  text-align: left;
+  width: 35%;
+  margin: 0 auto;
+  padding: 1em;
+  border-radius: 25px;
+  display: flex;
+  position: relative;
+  margin-top: 20px;
+  right: -30%;
+}  
+
 .botName {
   font-family: 'Bowlby One SC', cursive;
   color: black;
@@ -53,9 +69,9 @@ li {
 
 .message {
   text-align: left;
-  margin-top: 10;
+  margin-top: 10%;
   position: relative;
-  left: -35%;
+  left: -20%;
 }
 
 form {

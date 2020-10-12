@@ -36,21 +36,31 @@ function randomName() {
 }
 
 export function Content() {
-    const [messagees, setMessagees] = React.useState([]);
+    const [messages, setMessages] = React.useState([]);
+    const [users, setUsers] = React.useState("");
     
-    function getNewMessagees() {
+    function getNewMessages() {
         
         React.useEffect(() => {
             Socket.on('messagees received', (data) => {
                 console.log("Received messagees from server: " + data['allmessagees']);
-                setMessagees(data['allmessagees']);
+                setMessages(data['allmessagees']);
             })
         });
     }
     
-    getNewMessagees();
+    getNewMessages();
+    
+    function getNewUsers() {
+        React.useEffect(() => {
+            Socket.on('messagees received', (data) => {
+                console.log("Received messagees from server: " + data['allmessagees']);
+                setMessages(data['allmessagees']);
+            })
+        });
+    }
 
-    const name = "autumn_wind (BOT)";
+    const name = "icy_wind (BOT)";
     
     return (
         <div className="App">
@@ -59,7 +69,7 @@ export function Content() {
             </div>
                 <ol>
                     {
-                        messagees.map(
+                        messages.map(
                             (message, index) =>
                                 <li key={index}> <div className="botName"> {name.toUpperCase()}: </div> <div className="message"><p>{message}</p></div> </li>
                         )
