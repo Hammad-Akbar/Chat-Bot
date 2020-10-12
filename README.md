@@ -94,14 +94,14 @@ If that doesn't work: `sudo vim $(psql -c "show hba_file;" | grep pg_hba.conf)`
 4. Ensure that `sql.env` has the username/password of the superuser you created!  
 
 ### Run your code!    
-  a) `npm run watch`. If prompted to install webpack-cli, type "yes"    
-  b) In a new terminal, `sudo service postgresql start` to start PSQL
-  c) Go into the python interactive shell and run the following:
-        i) `import models`
-        ii) `models.db.create_all()`
-        iii) `quit()`
-  c) `python app.py`    
-  d) Preview Running Application (might have to clear your cache by doing a hard refresh)    
+1. `npm run watch`. If prompted to install webpack-cli, type "yes"    
+2. In a new terminal, `sudo service postgresql start` to start PSQL
+3. Go into the python interactive shell and run the following:
+    a) `import models`
+    b) `models.db.create_all()`
+    c) `quit()`
+4. `python app.py`    
+5. Preview Running Application (might have to clear your cache by doing a hard refresh)    
 
 ## Aknowledgments and Issues:
 
