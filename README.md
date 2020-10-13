@@ -6,7 +6,8 @@ The goal of this project was to utilize functional React and create a chat box w
 The following technologies were used in the creation of this project:
   1. Python
   2. PSQL
-  3. ENV Files
+  3. SocketIO
+  4. ENV Files
 
  The following frameworks were used in the creation of this project:
    1. ReactJSx
@@ -42,7 +43,7 @@ The following technologies were used in the creation of this project:
       ```
       web: python app.py
       ```
-6. When you are ready to deploy your app, first push your changes to git using `git push`. Then run `git push heroku master` to deploy your app to heroku.
+6. When you are ready to deploy your app, first push your changes to git using `git push`. Then run `git push heroku master` to deploy your app to heroku. If that does not work, try using the command, `git push heroku HEAD:master`.
 
 7. If you are still having issues, you may use `heroku logs --tail` to see what's wrong.
 
@@ -103,9 +104,22 @@ If that doesn't work: `sudo vim $(psql -c "show hba_file;" | grep pg_hba.conf)`
 4. `python app.py`    
 5. Preview Running Application (might have to clear your cache by doing a hard refresh)    
 
+### Pushing to Heroku
+After you create your heroku app, you will need to push the database to heroku:
+1. Create a database on heroku `heroku addons:create heroku-postgresql:hobby-dev`
+2. Wait until ready to use `heroku pg:wait`
+3. Alter the database owner:
+    a) `psql`
+    b) `ALTER DATABASE Postgres OWNER TO user` [where user is the username created in Section: "Setting up PSQL", 7b]
+4. Now push the database onto heroku, `heroku pg:push postgres DATABASE_URL`
+
+
 ## Aknowledgments and Issues:
 
 ### Challenges: 
+There were numerous challenges faced when attempting to create this chat bot. The first challenge was simply how to store and take in messages from the user. This was accomplished using the useState hook in React. This hook allows use to utilize state variables in functional components. After receiving the message from the user, these messages are stored in a database and emited to the React component and display on the screen. Another challenge that I had was implementing a command to clear the chat log. In order to do this I would need to empty the database column that contains the message but maintain the same column. This was accomplished by creating a function which will perform a query to delete the column. After being deleted the session will restart. 
 
+If I had more time available, one feature I would like to add is the ability to send pictures and have them display in the chat bubble. One way this could be implemented is having a button which lets us attatch an image. The image can be uploaded from the internet. When attatched the image's URL source would be sent over and stored into the database. The server response would be a chat bubble with the picture in it. 
 
 ### Known Issues:
+One known issue that I have is that the messages sent by the user and the bot can not be differentiated. The bot responds with the same message that the user sends. Another issue is that there is currently no implementation which allows the user to enter their own username. 
