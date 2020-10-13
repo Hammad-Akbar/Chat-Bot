@@ -29,11 +29,11 @@ ol {
   overflow: auto;
 }
 
-li {
+.botMessage {
   font-family: "Helvetica Neue Light", sans-serif;
   color: darkslategray;
   font-size: 14;
-  background-color: lightblue;
+  background-color: lightgrey;
   text-align: left;
   width: 35%;
   margin: 0 auto;
@@ -67,11 +67,25 @@ li {
   font-size: 14;
 }
 
+.userName {
+  font-family: 'Bowlby One SC', cursive;
+  color: black;
+  font-size: 14;
+}
+
 .message {
   text-align: left;
   margin-top: 10%;
   position: relative;
   left: -20%;
+}
+
+.messageSent .message p:blank {
+  display: none;
+}
+
+.botMessage .message p:blank {
+  display: none;
 }
 
 form {
@@ -99,3 +113,4 @@ button {
   border-radius: 8px;
   margin-left: 10px;
 }
+

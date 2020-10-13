@@ -31,36 +31,52 @@ function randomName() {
   ];
   const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  const name = adjective + "_" + noun + " (BOT)";
-  return name;
+  const user = adjective + "_" + noun;
+  return user;
+}
+
+function check(message) {
+    if (message.startsWith(" ")) {
+        return message;
+    }
+    else {
+        message = " ";
+        return message
+    }
+}
+
+function checkNot(message) {
+    if (message.startsWith(" ") == false) {
+        return message;
+    }
+    else if (message.startsWith("!! ")) {
+        return message;
+    }
+    else {
+        message = " ";
+        return message;
+    }
 }
 
 export function Content() {
     const [messages, setMessages] = React.useState([]);
-    const [users, setUsers] = React.useState("");
     
     function getNewMessages() {
         
         React.useEffect(() => {
-            Socket.on('messagees received', (data) => {
-                console.log("Received messagees from server: " + data['allmessagees']);
-                setMessages(data['allmessagees']);
+            Socket.on('messages received', (data) => {
+                console.log("Received messages from server: " + data['allmessages']);
+                setMessages(data['allmessages']);
             })
         });
     }
     
     getNewMessages();
     
-    function getNewUsers() {
-        React.useEffect(() => {
-            Socket.on('messagees received', (data) => {
-                console.log("Received messagees from server: " + data['allmessagees']);
-                setMessages(data['allmessagees']);
-            })
-        });
-    }
-
     const name = "icy_wind (BOT)";
+    
+    let user = randomName();
+
     
     return (
         <div className="App">
@@ -69,11 +85,14 @@ export function Content() {
             </div>
                 <ol>
                     {
-                        messages.map(
-                            (message, index) =>
-                                <li key={index}> <div className="botName"> {name.toUpperCase()}: </div> <div className="message"><p>{message}</p></div> </li>
+                        messages.map((message, index) =>
+                            <li key={index}> 
+                                <div className="messageSent"> <div className="userName"> {user.toUpperCase()}</div> <div className="message"><p> {checkNot(message)} </p></div></div>
+                                <div className="botMessage"> <div className="botName"> {name.toUpperCase()}: </div> <div className="message"><p>{check(message)}</p></div> </div>
+                            </li>
                         )
                     }
+                    
                 </ol>
             <Button />
         </div>

@@ -9,7 +9,7 @@ import models
 import requests
 import json
 
-MESSAGES_RECEIVED_CHANNEL = 'messagees received'
+MESSAGES_RECEIVED_CHANNEL = 'messages received'
 
 app = flask.Flask(__name__)
 
@@ -36,25 +36,27 @@ def clear_data():
     session.commit()
     session.close()
     
-def emit_all_messagees(channel):
-    #content.jsx is looking for a key called allmessagees, so we want to emit to all messagees 
-    all_messagees = [ \
+def emit_all_messages(channel):
+    #content.jsx is looking for a key called allmessages, so we want to emit to all messages 
+    all_messages = [ \
         db_message.message for db_message in \
         db.session.query(models.MessageLog).all()
     ]
     
     socketio.emit(channel, {
-        'allmessagees' : all_messagees 
+        'allmessages' : all_messages 
     })
+
 
 @socketio.on('connect')
 def on_connect():
-    print('Someone connected!')
+    sid = str(flask.request.sid)
+    print(sid + ' connected!')
     socketio.emit('connected', {
         'test': 'Connected'
     })
     
-    emit_all_messagees(MESSAGES_RECEIVED_CHANNEL)
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
 @socketio.on('disconnect')
 def on_disconnect():
@@ -66,30 +68,38 @@ def on_new_message(data):
     text = data["message"]
     
     if text == "!! about":
-        text = "This is a chat app made with React."
+        text = " This is a chat app made with React."
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
     elif text == "!! help":
-        text = "These are the following commands you can use: "
+        text = " These are the following commands you can use: "
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! about    ->  learn about me"
+        text = " !! about    ->  learn about me"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! help     ->  list of commands"
+        text = " !! help     ->  list of commands"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)"
+        text = " !! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! norris  ->  get a random Chuck Norris Joke"
+        text = " !! norris  ->  get a random Chuck Norris Joke"
         db.session.add(models.MessageLog(text));
         db.session.commit();
         
-        text = "!! clear    ->  clear chat log"
+        text = " !! clear    ->  clear chat log"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
     elif text.startswith("!! translate "):
         try:
@@ -100,13 +110,26 @@ def on_new_message(data):
             json_body = response.json()
             text = json.dumps(json_body["contents"]["translated"], indent = 2)
             text = text.replace("\\\\", "\\")
+            text = " " + text
+            db.session.add(models.MessageLog(text));
+            db.session.commit();
+        
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
             
         except KeyError:
-            text = "Sorry the translator is broken. Try again later."
+            text = " Sorry the translator is broken. Try again later."
+            db.session.add(models.MessageLog(text));
+            db.session.commit();
         
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+            
     elif text == "!! clear":
         clear_data()
-        text = ""
+        text = " "
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
         
     elif text == "!! norris":
         url = "https://api.chucknorris.io/jokes/random"
@@ -114,19 +137,31 @@ def on_new_message(data):
         json_body = response.json()
         text = json.dumps(json_body["value"], indent = 2)
         text.strip('"')
+        text = " " + text
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
         
         
     elif text.startswith("!! "):
-        text = "Not a valid command"
+        text = " Not a valid command"
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
     
-    db.session.add(models.MessageLog(text));
-    db.session.commit();
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     
-    emit_all_messagees(MESSAGES_RECEIVED_CHANNEL)
-
+    else:
+        text = data["message"]
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+        
+    
 @app.route('/')
 def index():
-    emit_all_messagees(MESSAGES_RECEIVED_CHANNEL)
+    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
 
     return flask.render_template("index.html")
 
