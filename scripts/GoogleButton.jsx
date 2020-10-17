@@ -5,8 +5,7 @@ import GoogleLogin from 'react-google-login';
 
 
 const handleSubmit = (response) => {
-    console.log(response);
-    console.log(response.profileObj.name);
+    console.log("Successfully logged in")
     let name = response.profileObj.name;
     Socket.emit('new google user', {
         'name': name,
@@ -24,18 +23,6 @@ const handleSubmitFailure = (response) => {
     
     console.log('Sent the name ' + name + ' to server!');
 }
-
-/*
-function handleSubmit(event) {
-    console.log("reached submit");
-    let name = "John Doe";
-    Socket.emit('new google user', {
-        'name': name,
-    });
-    
-    console.log('Sent the name ' + name + ' to server!');
-}
-*/
 
 export function GoogleButton() {
     return <GoogleLogin

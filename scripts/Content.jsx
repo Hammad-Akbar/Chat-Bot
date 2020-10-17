@@ -6,13 +6,18 @@ import { Socket } from './Socket';
 import { GoogleButton } from './GoogleButton';
 import './Content.css';
 
+
 function check(message) {
     if (message.startsWith(" ")) {
-        return message;
+        return 1;
     }
+    /*
+    else if (message.startsWith("!! ")) {
+        return 0;
+    }
+    */
     else {
-        message = null;
-        return message
+        return 0;
     }
 }
 
@@ -28,6 +33,7 @@ function checkNot(message) {
         return message;
     }
 }
+
 
 export function Content() {
     const [messages, setMessages] = React.useState([]);
@@ -47,8 +53,8 @@ export function Content() {
     
     function getAllAccounts() {
         React.useEffect(() => {
-            Socket.on('accounts received', (data) => {
-                let allAccounts = data['allAccounts'];
+            Socket.on('users updated', (data) => {
+                let allAccounts = data['allUsers'];
                 console.log("Received accounts from server: " + allAccounts);
                 setAccounts(allAccounts);
             })
@@ -61,10 +67,10 @@ export function Content() {
     
     function getUserName() {
         let user = "GUEST";
-        accounts.map((account, index) =>
-            <li key={index}> {account} </li>
-        );
-        return user
+        if (accounts[0] != "Guest") {
+            user = accounts[0]
+        };
+        return user;
     }
 
     return (
@@ -75,12 +81,12 @@ export function Content() {
             </div>
                 <ol>
                     {
-                        messages.map((message, index) =>
-                            <li key={index}> 
-                                <div className="messageSent"> <div className="userName"> {getUserName().toUpperCase()}</div> <div className="message"><p> {checkNot(message)} </p></div></div>
-                                <div className="botMessage"> <div className="botName"> {bot.toUpperCase()} </div> <div className="message"><p>{check(message)}</p></div> </div>
-                            </li>
-                        )
+                        messages.map((message, index) => {
+                            if(check(message) == 1)
+                                return  <li key={index}> <div className="botMessage"> <div className="botName"> {bot} </div> <div className="message"><p>{message}</p></div> </div></li>
+                            else
+                                return <li key={index}> <div className="messageSent"> <div className="userName"> {getUserName()}</div> <div className="message"><p> {message} </p></div></div></li>
+                        })
                     }
                     
                 </ol>

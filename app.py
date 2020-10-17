@@ -38,6 +38,13 @@ def clear_data():
     session.commit()
     session.close()
 
+def clear_users():
+    session = db.session()
+    f = session.query(models.AuthUser).delete()
+    print('records deleted:',f)
+    session.commit()
+    session.close()
+    
 #send all messages    
 def emit_all_messages(channel):
     #content.jsx is looking for a key called allmessages, so we want to emit to all messages 
@@ -53,8 +60,9 @@ def emit_all_messages(channel):
 #send the names of all users
 def emit_all_oauth_users(channel):
     all_users = [ \
-        user.name for user \
-        in db.session.query(models.AuthUser).all()]
+        user.name for user in \
+        db.session.query(models.AuthUser).all()
+    ]
         
     socketio.emit(channel, {
         'allUsers': all_users
@@ -62,8 +70,11 @@ def emit_all_oauth_users(channel):
 
 #add username to database if login did not fail
 def push_new_user_to_db(name, auth_type):
-    # TODO remove this check after the logic works correctly
-    if name != "Guest":
+    if name != "GUEST":
+        db.session.add(models.AuthUser(name, auth_type));
+        db.session.commit();
+    else:
+        name == 'GUEST'
         db.session.add(models.AuthUser(name, auth_type));
         db.session.commit();
         
@@ -87,7 +98,9 @@ def on_disconnect():
 @socketio.on('new google user')
 def on_new_google_user(data):
     print("Got an event for new google user input with data:", data)
-    push_new_user_to_db(data['name'], models.AuthUserType.GOOGLE)
+    name = data['name']
+    push_new_user_to_db(name, models.AuthUserType.GOOGLE)
+    emit_all_oauth_users(USERS_UPDATED_CHANNEL)
 
 #push messages and deal with commands 
 @socketio.on('new message input')
@@ -158,6 +171,14 @@ def on_new_message(data):
         db.session.commit();
     
         emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+    
+    elif text == "!! clear users":
+        clear_users()
+        text = " "
+        db.session.add(models.MessageLog(text));
+        db.session.commit();
+    
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
         
     elif text == "!! norris":
         url = "https://api.chucknorris.io/jokes/random"
@@ -190,6 +211,7 @@ def on_new_message(data):
 @app.route('/')
 def index():
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+    emit_all_oauth_users(USERS_UPDATED_CHANNEL)
 
     return flask.render_template("index.html")
 
