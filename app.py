@@ -10,6 +10,7 @@ import requests
 import json
 
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
+USERS_UPDATED_CHANNEL = 'users updated'
 
 app = flask.Flask(__name__)
 
@@ -29,13 +30,15 @@ db.app = app
 db.create_all()
 db.session.commit()
 
+#clear message log
 def clear_data():
     session = db.session()
     f = session.query(models.MessageLog).delete()
     print('records deleted:',f)
     session.commit()
     session.close()
-    
+
+#send all messages    
 def emit_all_messages(channel):
     #content.jsx is looking for a key called allmessages, so we want to emit to all messages 
     all_messages = [ \
@@ -47,6 +50,24 @@ def emit_all_messages(channel):
         'allmessages' : all_messages 
     })
 
+#send the names of all users
+def emit_all_oauth_users(channel):
+    all_users = [ \
+        user.name for user \
+        in db.session.query(models.AuthUser).all()]
+        
+    socketio.emit(channel, {
+        'allUsers': all_users
+    })
+
+#add username to database if login did not fail
+def push_new_user_to_db(name, auth_type):
+    # TODO remove this check after the logic works correctly
+    if name != "Guest":
+        db.session.add(models.AuthUser(name, auth_type));
+        db.session.commit();
+        
+    emit_all_oauth_users(USERS_UPDATED_CHANNEL)
 
 @socketio.on('connect')
 def on_connect():
@@ -62,6 +83,13 @@ def on_connect():
 def on_disconnect():
     print ('Someone disconnected!')
 
+#push the name of the new user
+@socketio.on('new google user')
+def on_new_google_user(data):
+    print("Got an event for new google user input with data:", data)
+    push_new_user_to_db(data['name'], models.AuthUserType.GOOGLE)
+
+#push messages and deal with commands 
 @socketio.on('new message input')
 def on_new_message(data):
     print("Got an event for new message input with data:", data)

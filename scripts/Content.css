@@ -77,7 +77,7 @@ ol {
   text-align: left;
   margin-top: 10%;
   position: relative;
-  left: -20%;
+  left: -10%;
 }
 
 .messageSent .message p:blank {
@@ -85,6 +85,14 @@ ol {
 }
 
 .botMessage .message p:blank {
+  display: none;
+}
+
+.messageSent:blank {
+  display: none;
+}
+
+.botMessage:blank {
   display: none;
 }
 

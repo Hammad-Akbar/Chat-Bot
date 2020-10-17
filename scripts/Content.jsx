@@ -3,44 +3,15 @@ import * as React from 'react';
 
 import { Button } from './Button';
 import { Socket } from './Socket';
+import { GoogleButton } from './GoogleButton';
 import './Content.css';
-
-function randomName() {
-  const adjectives = [
-    "autumn", "hidden", "bitter", "misty", "silent", "empty", "dry", "dark",
-    "summer", "icy", "delicate", "quiet", "white", "cool", "spring", "winter",
-    "patient", "twilight", "dawn", "crimson", "wispy", "weathered", "blue",
-    "billowing", "broken", "cold", "damp", "falling", "frosty", "green", "long",
-    "late", "lingering", "bold", "little", "morning", "muddy", "old", "red",
-    "rough", "still", "small", "sparkling", "throbbing", "shy", "wandering",
-    "withered", "wild", "black", "young", "holy", "solitary", "fragrant",
-    "aged", "snowy", "proud", "floral", "restless", "divine", "polished",
-    "ancient", "purple", "lively", "nameless"
-  ];
-  
-  const nouns = [
-    "waterfall", "river", "breeze", "moon", "rain", "wind", "sea", "morning",
-    "snow", "lake", "sunset", "pine", "shadow", "leaf", "dawn", "glitter",
-    "forest", "hill", "cloud", "meadow", "sun", "glade", "bird", "brook",
-    "butterfly", "bush", "dew", "dust", "field", "fire", "flower", "firefly",
-    "feather", "grass", "haze", "mountain", "night", "pond", "darkness",
-    "snowflake", "silence", "sound", "sky", "shape", "surf", "thunder",
-    "violet", "water", "wildflower", "wave", "water", "resonance", "sun",
-    "wood", "dream", "cherry", "tree", "fog", "frost", "voice", "paper", "frog",
-    "smoke", "star"
-  ];
-  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  const user = adjective + "_" + noun;
-  return user;
-}
 
 function check(message) {
     if (message.startsWith(" ")) {
         return message;
     }
     else {
-        message = " ";
+        message = null;
         return message
     }
 }
@@ -53,13 +24,14 @@ function checkNot(message) {
         return message;
     }
     else {
-        message = " ";
+        message = null;
         return message;
     }
 }
 
 export function Content() {
     const [messages, setMessages] = React.useState([]);
+    const [accounts, setAccounts] = React.useState([]);
     
     function getNewMessages() {
         
@@ -73,13 +45,31 @@ export function Content() {
     
     getNewMessages();
     
-    const name = "icy_wind (BOT)";
+    function getAllAccounts() {
+        React.useEffect(() => {
+            Socket.on('accounts received', (data) => {
+                let allAccounts = data['allAccounts'];
+                console.log("Received accounts from server: " + allAccounts);
+                setAccounts(allAccounts);
+            })
+        });
+    }
     
-    let user = randomName();
+    getAllAccounts();
+    
+    const bot = "BOT";
+    
+    function getUserName() {
+        let user = "GUEST";
+        accounts.map((account, index) =>
+            <li key={index}> {account} </li>
+        );
+        return user
+    }
 
-    
     return (
         <div className="App">
+            <GoogleButton />
             <div className="App-header">
               <h1>Welcome to the Chatroom!</h1>
             </div>
@@ -87,8 +77,8 @@ export function Content() {
                     {
                         messages.map((message, index) =>
                             <li key={index}> 
-                                <div className="messageSent"> <div className="userName"> {user.toUpperCase()}</div> <div className="message"><p> {checkNot(message)} </p></div></div>
-                                <div className="botMessage"> <div className="botName"> {name.toUpperCase()}: </div> <div className="message"><p>{check(message)}</p></div> </div>
+                                <div className="messageSent"> <div className="userName"> {getUserName().toUpperCase()}</div> <div className="message"><p> {checkNot(message)} </p></div></div>
+                                <div className="botMessage"> <div className="botName"> {bot.toUpperCase()} </div> <div className="message"><p>{check(message)}</p></div> </div>
                             </li>
                         )
                     }
