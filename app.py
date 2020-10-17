@@ -166,7 +166,7 @@ def on_new_message(data):
             
     elif text == "!! clear":
         clear_data()
-        text = " "
+        text = ""
         db.session.add(models.MessageLog(text));
         db.session.commit();
     

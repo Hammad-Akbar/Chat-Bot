@@ -17,8 +17,8 @@ const handleSubmit = (response) => {
 const handleSubmitFailure = (response) => {
   console.log("Failed to login")
    let name = "Guest";
-    Socket.emit('New Guest User', {
-        'Guest': name,
+    Socket.emit('new google user', {
+        'name': name,
     });
     
     console.log('Sent the name ' + name + ' to server!');

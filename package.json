@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "react-google-login": "^5.1.21",
+    "react-linkify": "^1.0.0-alpha",
     "socket.io-client": "^2.3.1"
   }
 }
