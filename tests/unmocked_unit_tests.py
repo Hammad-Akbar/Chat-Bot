@@ -2,11 +2,11 @@
 
 import unittest
 import sys
-import app
-import models
 from os.path import dirname, join
-from app import KEY_RESPONSE
 sys.path.insert(1, join(dirname(__file__), '../'))
+
+import app
+from app import KEY_RESPONSE
 
 KEY_INPUT = "input"
 
