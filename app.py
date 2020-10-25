@@ -5,10 +5,10 @@ import os
 import flask
 import flask_sqlalchemy
 import flask_socketio
-import models 
 import requests
 import json
 
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
 USERS_UPDATED_CHANNEL = 'users updated'
 
@@ -30,6 +30,140 @@ db.app = app
 db.create_all()
 db.session.commit()
 
+import models 
+
+BOT_PREFIX = "!!"
+KEY_IS_BOT = "is_bot"
+KEY_BOT_COMMAND = "bot_command"
+KEY_MESSAGE = "message"
+
+def parse_message(message):
+    if not message.startswith(BOT_PREFIX):
+        return {
+            KEY_IS_BOT: False, 
+            KEY_BOT_COMMAND: None, 
+            KEY_MESSAGE: message,
+        }
+            
+    message_components = message.split(" ", 1)
+    if len(message_components) == 1:
+        possible_bot_cmd, rest_of_message = message_components[0], ""
+    else:
+        possible_bot_cmd, rest_of_message = message_components[0], message_components[1]
+    
+    return {
+        KEY_IS_BOT: True, 
+        KEY_BOT_COMMAND: possible_bot_cmd[len(BOT_PREFIX):], 
+        KEY_MESSAGE: rest_of_message,
+    }
+    
+def commands(text):
+    if text == "!! about":
+        text = " This is a chat app made with React."
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    elif text == "!! help":
+        text = " These are the following commands you can use: "
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        text = " !! about    ->  learn about me"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        text = " !! help     ->  list of commands"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        text = " !! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        text = " !! norris  ->  get a random Chuck Norris Joke"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        text = " !! clear    ->  clear chat log"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    elif text.startswith("!! translate "):
+        try:
+            text = text.strip("!! translate ")
+            text = text.replace(" ", "%20")
+            url = "https://api.funtranslations.com/translate/pirate.json?text={}".format(text)
+            response = requests.get(url)
+            json_body = response.json()
+            text = json.dumps(json_body["contents"]["translated"], indent = 2)
+            text = text.replace("\\\\", "\\")
+            text = " " + text
+            db.session.add(models.MessageLog(text))
+            db.session.commit()
+
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+        except KeyError:
+            text = " Sorry the translator is broken. Try again later."
+            db.session.add(models.MessageLog(text))
+            db.session.commit()
+
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    elif text == "!! clear":
+        clear_data()
+        text = ""
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+    
+    elif text == "!! clear users":
+        clear_users()
+        text = " "
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    elif text == "!! norris":
+        try:
+            url = "https://api.chucknorris.io/jokes/random"
+            response = requests.get(url)
+            json_body = response.json()
+            text = json.dumps(json_body["value"], indent = 2)
+            text.strip('"')
+            text = " " + text
+            db.session.add(models.MessageLog(text))
+            db.session.commit()
+
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+        except KeyError:
+            text = " Sorry joke machine is broken. Try again later."
+            db.session.add(models.MessageLog(text))
+            db.session.commit()
+
+            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    elif text.startswith("!! "):
+        text = " Not a valid command"
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+
+    else:
+        db.session.add(models.MessageLog(text))
+        db.session.commit()
+
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+        
+    return text
+    
 #clear message log
 def clear_data():
     session = db.session()
@@ -107,106 +241,7 @@ def on_new_google_user(data):
 def on_new_message(data):
     print("Got an event for new message input with data:", data)
     text = data["message"]
-    
-    if text == "!! about":
-        text = " This is a chat app made with React."
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
-    elif text == "!! help":
-        text = " These are the following commands you can use: "
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-        
-        text = " !! about    ->  learn about me"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-        
-        text = " !! help     ->  list of commands"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-        
-        text = " !! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-        
-        text = " !! norris  ->  get a random Chuck Norris Joke"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-        
-        text = " !! clear    ->  clear chat log"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
-    elif text.startswith("!! translate "):
-        try:
-            text = text.strip("!! translate ")
-            text = text.replace(" ", "%20")
-            url = "https://api.funtranslations.com/translate/pirate.json?text={}".format(text)
-            response = requests.get(url)
-            json_body = response.json()
-            text = json.dumps(json_body["contents"]["translated"], indent = 2)
-            text = text.replace("\\\\", "\\")
-            text = " " + text
-            db.session.add(models.MessageLog(text));
-            db.session.commit();
-        
-            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-            
-        except KeyError:
-            text = " Sorry the translator is broken. Try again later."
-            db.session.add(models.MessageLog(text));
-            db.session.commit();
-        
-            emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-            
-    elif text == "!! clear":
-        clear_data()
-        text = ""
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
-    elif text == "!! clear users":
-        clear_users()
-        text = " "
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-        
-    elif text == "!! norris":
-        url = "https://api.chucknorris.io/jokes/random"
-        response = requests.get(url)
-        json_body = response.json()
-        text = json.dumps(json_body["value"], indent = 2)
-        text.strip('"')
-        text = " " + text
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-        
-        
-    elif text.startswith("!! "):
-        text = " Not a valid command"
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
-    else:
-        text = data["message"]
-        db.session.add(models.MessageLog(text));
-        db.session.commit();
-    
-        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-        
+    commands(text)
     
 @app.route('/')
 def index():
