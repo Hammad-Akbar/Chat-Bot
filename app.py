@@ -1,14 +1,15 @@
-# app.py
-from os.path import join, dirname
-from dotenv import load_dotenv
+""" app.py - establish socket connections and push users and messages from database to app """
+
 import os
+import json
+from os.path import join, dirname
 import flask
 import flask_sqlalchemy
 import flask_socketio
 import requests
-import json
+from dotenv import load_dotenv
+import models
 
-SQLALCHEMY_TRACK_MODIFICATIONS = True
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
 USERS_UPDATED_CHANNEL = 'users updated'
 
@@ -26,20 +27,19 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
-
 db.create_all()
 db.session.commit()
-
-import models 
 
 KEY_RESPONSE = "message"
 
 def commands(text):
+    """ Function to parse commands """
+
     if text == "!! about":
         text = " This is a chat app made with React."
 
     elif text == "!! help":
-        text = ''' 
+        text = '''
         These are the following commands you can use:
         \n!! about    ->  learn about me
         \n!! help     ->  list of commands
@@ -82,71 +82,86 @@ def commands(text):
         text = " Not a valid command"
 
     else:
-        text = text
-      
+        return text
+
     return text
-    
+
 def clear_data():
+    """ function to delete messages from chat log """
+
     session = db.session()
-    f = session.query(models.MessageLog).delete()
-    print('records deleted:',f)
+    delete_query = session.query(models.MessageLog).delete()
+    print('records deleted:',delete_query)
     session.commit()
     session.close()
 
 def clear_users():
+    """ function to clear all user names from database """
+
     session = db.session()
-    f = session.query(models.AuthUser).delete()
-    print('records deleted:',f)
+    delete_query = session.query(models.AuthUser).delete()
+    print('records deleted:',delete_query)
     session.commit()
     session.close()
-    
+
 def emit_all_messages(channel):
+    """ send all messages to the message channel """
+
     all_messages = [ \
         db_message.message for db_message in \
         db.session.query(models.MessageLog).all()
     ]
-    
+
     socketio.emit(channel, {
-        'allmessages' : all_messages 
+        'allmessages' : all_messages
     })
 
 def emit_all_oauth_users(channel):
+    """ send name of all signed in users """
+
     all_users = [ \
         user.name for user in \
         db.session.query(models.AuthUser).all()
     ]
-        
+
     socketio.emit(channel, {
         'allUsers': all_users
     })
 
 def push_new_user_to_db(name, auth_type):
+    """ add name of user if they are signing in. guest if otherwise """
+
     if name != "GUEST":
-        db.session.add(models.AuthUser(name, auth_type));
-        db.session.commit();
+        db.session.add(models.AuthUser(name, auth_type))
+        db.session.commit()
     else:
-        name == 'GUEST'
-        db.session.add(models.AuthUser(name, auth_type));
-        db.session.commit();
-        
+        db.session.add(models.AuthUser(name, auth_type))
+        db.session.commit()
+
     emit_all_oauth_users(USERS_UPDATED_CHANNEL)
 
 @socketio.on('connect')
 def on_connect():
+    """ emit messages when someone connects """
+
     sid = str(flask.request.sid)
     print(sid + ' connected!')
     socketio.emit('connected', {
         'test': 'Connected'
     })
-    
+
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
+
 @socketio.on('disconnect')
 def on_disconnect():
+    """ notify when someone disconnects """
+
     print ('Someone disconnected!')
 
 @socketio.on('new google user')
 def on_new_google_user(data):
+    """ when a user signs in """
+
     print("Got an event for new google user input with data:", data)
     name = data['name']
     push_new_user_to_db(name, models.AuthUserType.GOOGLE)
@@ -154,21 +169,25 @@ def on_new_google_user(data):
 
 @socketio.on('new message input')
 def on_new_message(data):
+    """ when receiving a new message """
+
     print("Got an event for new message input with data:", data)
     text = data["message"]
-    
+
     db.session.add(models.MessageLog(commands(text)))
     db.session.commit()
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    
+
 @app.route('/')
 def index():
+    """ function to render index """
+
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
     emit_all_oauth_users(USERS_UPDATED_CHANNEL)
 
     return flask.render_template("index.html")
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     socketio.run(
         app,
         host=os.getenv('IP', '0.0.0.0'),
