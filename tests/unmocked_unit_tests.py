@@ -7,80 +7,51 @@ import app
 from app import KEY_RESPONSE
 
 KEY_INPUT = "input"
-KEY_EXPECTED = "expected"
 
 class ChatbotTestCase(unittest.TestCase):
     def setUp(self):
         self.success_test_params = [
             {
                 KEY_INPUT: "!!help",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_RESPONSE: "!!help",
             },
             {
                 KEY_INPUT: "!about me",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_RESPONSE: "!about me",
             },
             {
                 KEY_INPUT: "!! about",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " This is a chat app made with React.",
-                }
-            },
-            {
-                KEY_INPUT: "!! help",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: ''' 
-                    These are the following commands you can use:
-                    \n!! about    ->  learn about me
-                    \n!! help     ->  list of commands
-                    \n!! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)
-                    \n!! norris  ->  get a random Chuck Norris Joke
-                    \n!! clear    ->  clear chat log
-                    ''',
-                }
+                KEY_RESPONSE: " This is a chat app made with React.",
             },
             {
                 KEY_INPUT: "!! clear",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: "",
-                }
+                KEY_RESPONSE: "",
+
             },
             {
-                KEY_INPUT: "!! helps",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_INPUT: "hello",
+                KEY_RESPONSE: "hello",
+
             },
             {
                 KEY_INPUT: " !! about",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_RESPONSE: " !! about",
             },
             {
                 KEY_INPUT: "!! help ",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_RESPONSE: " Not a valid command",
+
             },
             {
                 KEY_INPUT: "!! help !! about",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " Not a valid command",
-                }
+                KEY_RESPONSE: " Not a valid command",
             },
         ]
         
         self.failure_test_params = [
             {
                 KEY_INPUT: "!!help",
-                KEY_EXPECTED: {
-                    KEY_RESPONSE: " This is a chat app made with React.",
-                }
+                KEY_RESPONSE: " This is a chat app made with React.",
             },
         ]
 
@@ -88,17 +59,16 @@ class ChatbotTestCase(unittest.TestCase):
     def test_command_message_success(self):
         for test in self.success_test_params:
             response = app.commands(test[KEY_INPUT])
-            expected = test[KEY_EXPECTED]
+            expected = test[KEY_RESPONSE]
             
-            self.assertEqual(response[KEY_RESPONSE], expected[KEY_RESPONSE])
-            self.assertDictEqual(response, expected)
+            self.assertEqual(response, expected)
             
     def test_command_message_failure(self):
         for test in self.failure_test_params:
             response = app.commands(test[KEY_INPUT])
-            expected = test[KEY_EXPECTED]
+            expected = test[KEY_RESPONSE]
             
             self.assertNotEqual(response[KEY_RESPONSE], expected[KEY_RESPONSE])
 
-if __name__ == 'app':
+if __name__ == '__main__':
     unittest.main()
