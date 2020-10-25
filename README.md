@@ -114,9 +114,9 @@ After you create your heroku app, you will need to push the database to heroku:
 4. Now push the database onto heroku, `heroku pg:push postgres DATABASE_URL`
 
 ### Unit Testing
-In order to run unit tests, `coverage run -m --source=. unittest *.py`
-To see coverage report, `coverage html`
-When making changes, need to rerun, `coverage run -m --source=. unittest *.py && coverage html`
+1. In order to run unit tests, `coverage run -m --source=. unittest tests/*.py`
+2. To see coverage report, `coverage html`
+3. When making changes, need to rerun, `coverage run -m --source=. unittest tests/*.py && coverage html`
 
 
 ## Aknowledgments and Issues:
