@@ -113,6 +113,11 @@ After you create your heroku app, you will need to push the database to heroku:
     b) `ALTER DATABASE Postgres OWNER TO user` [where user is the username created in Section: "Setting up PSQL", 7b]
 4. Now push the database onto heroku, `heroku pg:push postgres DATABASE_URL`
 
+### Unit Testing
+In order to run unit tests, `coverage run -m --source=. unittest *.py`
+To see coverage report, `coverage html`
+When making changes, need to rerun, `coverage run -m --source=. unittest *.py && coverage html`
+
 
 ## Aknowledgments and Issues:
 

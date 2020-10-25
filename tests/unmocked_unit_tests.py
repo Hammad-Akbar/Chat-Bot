@@ -4,13 +4,10 @@ import sys
 sys.path.insert(1, join(dirname(__file__), '../'))
 
 import app
-from app import KEY_IS_BOT, KEY_BOT_COMMAND, KEY_MESSAGE
+from app import KEY_RESPONSE
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
-KEY_LENGTH = "length"
-KEY_FIRST_WORD = "first_word"
-KEY_SECOND_WORD = "second_word"
 
 class ChatbotTestCase(unittest.TestCase):
     def setUp(self):
@@ -18,51 +15,90 @@ class ChatbotTestCase(unittest.TestCase):
             {
                 KEY_INPUT: "!!help",
                 KEY_EXPECTED: {
-                    KEY_IS_BOT: True,
-                    KEY_BOT_COMMAND: "help",
-                    KEY_MESSAGE: "",
+                    KEY_RESPONSE: " Not a valid command",
                 }
             },
             {
                 KEY_INPUT: "!about me",
                 KEY_EXPECTED: {
-                    KEY_IS_BOT: False,
-                    KEY_BOT_COMMAND: None,
-                    KEY_MESSAGE: "!about me",
+                    KEY_RESPONSE: " Not a valid command",
                 }
             },
             {
-                KEY_INPUT: "!!about me",
+                KEY_INPUT: "!! about",
                 KEY_EXPECTED: {
-                    KEY_IS_BOT: False,
-                    KEY_BOT_COMMAND: None,
-                    KEY_MESSAGE: "!about me",
+                    KEY_RESPONSE: " This is a chat app made with React.",
+                }
+            },
+            {
+                KEY_INPUT: "!! help",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: ''' 
+                    These are the following commands you can use:
+                    \n!! about    ->  learn about me
+                    \n!! help     ->  list of commands
+                    \n!! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)
+                    \n!! norris  ->  get a random Chuck Norris Joke
+                    \n!! clear    ->  clear chat log
+                    ''',
+                }
+            },
+            {
+                KEY_INPUT: "!! clear",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: "",
+                }
+            },
+            {
+                KEY_INPUT: "!! helps",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: " Not a valid command",
+                }
+            },
+            {
+                KEY_INPUT: " !! about",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: " Not a valid command",
+                }
+            },
+            {
+                KEY_INPUT: "!! help ",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: " Not a valid command",
+                }
+            },
+            {
+                KEY_INPUT: "!! help !! about",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: " Not a valid command",
                 }
             },
         ]
         
         self.failure_test_params = [
-            # TODO HW13
+            {
+                KEY_INPUT: "!!help",
+                KEY_EXPECTED: {
+                    KEY_RESPONSE: " This is a chat app made with React.",
+                }
+            },
         ]
 
 
-    def test_parse_message_success(self):
+    def test_command_message_success(self):
         for test in self.success_test_params:
-            response = app.parse_message(test[KEY_INPUT])
+            response = app.commands(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
-            self.assertEqual(response[KEY_IS_BOT], expected[KEY_IS_BOT])
-            self.assertEqual(response[KEY_BOT_COMMAND], expected[KEY_BOT_COMMAND])
-            self.assertEqual(response[KEY_MESSAGE], expected[KEY_MESSAGE])
-            # Alternatively (and preferably), you can do self.assertDictEqual(response, expected)
+            self.assertEqual(response[KEY_RESPONSE], expected[KEY_RESPONSE])
+            self.assertDictEqual(response, expected)
             
-    def test_parse_message_failure(self):
+    def test_command_message_failure(self):
         for test in self.failure_test_params:
-            response = app.parse_message(test[KEY_INPUT])
+            response = app.commands(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
-            # TODO add assertNotEqual cases here instead
-            self.assertEqual(True, False)
+            self.assertNotEqual(response[KEY_RESPONSE], expected[KEY_RESPONSE])
 
 if __name__ == 'app':
     unittest.main()
