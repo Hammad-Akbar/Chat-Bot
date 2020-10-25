@@ -41,14 +41,7 @@ def commands(text):
         KEY_RESPONSE = text
 
     elif text == "!! help":
-        text = '''
-        These are the following commands you can use:
-        !! about    ->  learn about me
-        !! help     ->  list of commands
-        !! translate  ->  translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk)
-        !! norris  ->  get a random Chuck Norris Joke
-        !! clear    ->  clear chat log
-        '''
+        text = " These are the following commands you can use: •!! about -> learn about me •!! help -> list of commands •!! translate -> translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk) •!! norris -> get a random Chuck Norris Joke •!! clear -> clear chat log"
         KEY_RESPONSE = text
 
     elif text.startswith("!! translate "):
