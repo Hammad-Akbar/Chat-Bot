@@ -155,7 +155,6 @@ def on_new_google_user(data):
 @socketio.on('new message input')
 def on_new_message(data):
     """ when receiving a new message """
-
     text = data["message"]
 
     db.session.add(models.MessageLog(commands(text)))

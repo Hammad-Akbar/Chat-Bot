@@ -70,6 +70,14 @@ class ChatbotTestCase(unittest.TestCase):
                 KEY_INPUT: "!! clear",
                 KEY_RESPONSE: " Not a valid command",
             },
+            {
+                KEY_INPUT: "!! translate ",
+                KEY_RESPONSE: " Not a valid command",
+            },
+            {
+                KEY_INPUT: "!! norris",
+                KEY_RESPONSE: " Not a valid command",
+            },
         ]
 
     def test_command_message_success(self):
