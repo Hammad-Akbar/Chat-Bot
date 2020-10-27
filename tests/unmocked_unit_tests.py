@@ -80,6 +80,7 @@ class ChatbotTestCase(unittest.TestCase):
             expected = test[KEY_RESPONSE]
 
             self.assertEqual(response, expected)
+            self.assertAlmostEqual(response, expected)
 
     def test_command_message_failure(self):
         """ running tests on incorrect messages """

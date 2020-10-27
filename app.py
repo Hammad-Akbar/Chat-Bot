@@ -57,7 +57,6 @@ def commands(text):
 
         except KeyError:
             text = " Sorry the translator is broken. Try again later."
-            raise
 
     elif text == "!! clear":
         clear_data()
@@ -91,15 +90,6 @@ def clear_data():
 
     session = db.session()
     delete_query = session.query(models.MessageLog).delete()
-    print('records deleted:',delete_query)
-    session.commit()
-    session.close()
-
-def clear_users():
-    """ function to clear all user names from database """
-
-    session = db.session()
-    delete_query = session.query(models.AuthUser).delete()
     print('records deleted:',delete_query)
     session.commit()
     session.close()
@@ -144,8 +134,6 @@ def push_new_user_to_db(name, auth_type):
 def on_connect():
     """ emit messages when someone connects """
 
-    sid = str(flask.request.sid)
-    print(sid + ' connected!')
     socketio.emit('connected', {
         'test': 'Connected'
     })
@@ -156,13 +144,10 @@ def on_connect():
 def on_disconnect():
     """ notify when someone disconnects """
 
-    print ('Someone disconnected!')
-
 @socketio.on('new google user')
 def on_new_google_user(data):
     """ when a user signs in """
 
-    print("Got an event for new google user input with data:", data)
     name = data['name']
     push_new_user_to_db(name, models.AuthUserType.GOOGLE)
     emit_all_oauth_users(USERS_UPDATED_CHANNEL)
@@ -171,7 +156,6 @@ def on_new_google_user(data):
 def on_new_message(data):
     """ when receiving a new message """
 
-    print("Got an event for new message input with data:", data)
     text = data["message"]
 
     db.session.add(models.MessageLog(commands(text)))
