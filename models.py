@@ -11,7 +11,6 @@ class AuthUser(db.Model):
     name = db.Column(db.String(120))
 
     def __init__(self, name, auth_type):
-        #assert type(auth_type) is AuthUserType
         assert isinstance(auth_type, AuthUserType)
         self.name = name
         self.auth_type = auth_type.value

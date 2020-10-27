@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 MESSAGES_RECEIVED_CHANNEL = 'messages received'
 USERS_UPDATED_CHANNEL = 'users updated'
+KEY_RESPONSE = 'message'
 
 app = flask.Flask(__name__)
 
@@ -30,8 +31,6 @@ db.create_all()
 db.session.commit()
 
 import models
-
-KEY_RESPONSE = "message"
 
 def commands(text):
     """ Function to parse commands """
@@ -53,10 +52,12 @@ def commands(text):
             json_body = response.json()
             text = json.dumps(json_body["contents"]["translated"], indent = 2)
             text = text.replace("\\\\", "\\")
+            text.strip('"')
             text = " " + text
 
         except KeyError:
             text = " Sorry the translator is broken. Try again later."
+            raise
 
     elif text == "!! clear":
         clear_data()

@@ -67,14 +67,6 @@ class ChatbotTestCase(unittest.TestCase):
                 KEY_RESPONSE: " Not a valid command",
             },
             {
-                KEY_INPUT: "!! translate ",
-                KEY_RESPONSE: " Not a valid command",
-            },
-            {
-                KEY_INPUT: "!! norris",
-                KEY_RESPONSE: " Not a valid command",
-            },
-            {
                 KEY_INPUT: "!! clear",
                 KEY_RESPONSE: " Not a valid command",
             },

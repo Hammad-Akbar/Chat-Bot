@@ -1,9 +1,10 @@
-""" Testing unmocked responses in app.py """
+""" Testing mocked responses in app.py """
 
 import unittest
 import sys
 import app
 import models
+import unittest.mock as mock
 from os.path import dirname, join
 from app import KEY_RESPONSE
 sys.path.insert(1, join(dirname(__file__), '../'))
@@ -44,8 +45,8 @@ class ChatbotTestCase(unittest.TestCase):
                 KEY_RESPONSE: " Not a valid command",
             },
             {
-                KEY_INPUT: "!! help !! about",
-                KEY_RESPONSE: " Not a valid command",
+                KEY_INPUT: "!! translate Hello sir! my mother goes with me to the ocean.",
+                KEY_RESPONSE: "Ahoy matey! me dear ol' mum, bless her black soul goes with me t' th' briny deep.",
             },
             {
                 KEY_INPUT: "!! help",
@@ -80,23 +81,56 @@ class ChatbotTestCase(unittest.TestCase):
             },
         ]
 
+    def mocked_translate_command(self):
+        try:
+            self.success_test_params = [
+                {
+                    KEY_INPUT: "!! translate Hello sir! my mother goes with me to the ocean.",
+                    KEY_RESPONSE: "Ahoy matey! me dear ol' mum, bless her black soul goes with me t' th' briny deep.",
+                },
+            ]
+        except KeyError as k:
+            self.success_test_params = [
+                {
+                    KEY_INPUT: "!! translate Hello sir! my mother goes with me to the ocean.",
+                    KEY_RESPONSE: " Sorry the translator is broken. Try again later."
+                },
+            ]
+        return self.success_test_params
+
+    def mocked_norris_command(self):
+        return " Sorry joke machine is broken. Try again later."
+
     def test_command_message_success(self):
         """ running tests on correct messages """
-
+        
         for test in self.success_test_params:
             response = app.commands(test[KEY_INPUT])
             expected = test[KEY_RESPONSE]
 
+            err = " Sorry the translator is broken. Try again later."
+
             self.assertEqual(response, expected)
+            self.assertAlmostEquals(response, expected)
+            self.assertRaises(KeyError, app.commands, err)
+            
+            if response.startswith("!! translate "):
+                self.assertRaises(KeyError, app.commands, err)
 
     def test_command_message_failure(self):
         """ running tests on incorrect messages """
 
         for test in self.failure_test_params:
+
             response = app.commands(test[KEY_INPUT])
             expected = test[KEY_RESPONSE]
 
+            err = " Sorry the translator is broken. Try again later."
+
             self.assertNotEqual(response, expected)
+
+            if response.startswith("!! translate "):
+                self.assertRaises(KeyError, app.commands, err)
 
 if __name__ == '__main__':
     unittest.main()
