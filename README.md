@@ -96,11 +96,11 @@ If that doesn't work: `sudo vim $(psql -c "show hba_file;" | grep pg_hba.conf)`
 
 ### Run your code!    
 1. `npm run watch`. If prompted to install webpack-cli, type "yes"    
-2. In a new terminal, `sudo service postgresql start` to start PSQL
-3. Go into the python interactive shell and run the following:
+2. Go into the python interactive shell and run the following:
     a) `import models`
     b) `models.db.create_all()`
     c) `quit()`
+3. In a new terminal, `sudo service postgresql start` to start PSQL
 4. `python app.py`    
 5. Preview Running Application (might have to clear your cache by doing a hard refresh)    
 
@@ -115,8 +115,11 @@ After you create your heroku app, you will need to push the database to heroku:
 
 ### Unit Testing
 1. In order to run unit tests, `coverage run -m --source=. unittest tests/*.py`
-2. To see coverage report, `coverage html`
+2. To see coverage report, preview the file `index.html` in the `htmlcov` folder.
 3. When making changes, need to rerun, `coverage run -m --source=. unittest tests/*.py && coverage html`
+
+
+#### This repository can be cloned by running the following command: `git clone https://github.com/NJIT-CS490/project2-m3-haa38/`
 
 
 ## Aknowledgments and Issues:
@@ -124,7 +127,8 @@ After you create your heroku app, you will need to push the database to heroku:
 ### Challenges: 
 There were numerous challenges faced when attempting to create this chat bot. The first challenge was simply how to store and take in messages from the user. This was accomplished using the useState hook in React. This hook allows use to utilize state variables in functional components. After receiving the message from the user, these messages are stored in a database and emited to the React component and display on the screen. Another challenge that I had was implementing a command to clear the chat log. In order to do this I would need to empty the database column that contains the message but maintain the same column. This was accomplished by creating a function which will perform a query to delete the column. After being deleted the session will restart. 
 
-If I had more time available, one feature I would like to add is the ability to send pictures and have them display in the chat bubble. One way this could be implemented is having a button which lets us attatch an image. The image can be uploaded from the internet. When attatched the image's URL source would be sent over and stored into the database. The server response would be a chat bubble with the picture in it. 
+Upon completing milestone 3, new challenges and issues that I faced were related to testing. One challenge I had was making tests in order to mock database functions such as commit and add. I had accomplished this by implementing mock.patch and using a mocked out function to return my result. 
 
 ### Known Issues:
 One known issue that I have is that the messages sent by the user and the bot can not be differentiated. The bot responds with the same message that the user sends. Another issue is that there is currently no implementation which allows the user to enter their own username. 
+Upon completion of milestone 3, these issues were resolved. One issue that still remains is that while pictures are visible when the link is sent, if the picture link is sent with other text, the picture would not show.
