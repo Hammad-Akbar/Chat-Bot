@@ -37,11 +37,9 @@ def commands(text):
 
     if text == "!! about":
         text = " This is a chat app made with React."
-        KEY_RESPONSE = text
 
     elif text == "!! help":
         text = " These are the following commands you can use: •!! about -> learn about me •!! help -> list of commands •!! translate -> translate text into good barnacle-covered Corsair speak (thats pirate talk for pirate talk) •!! norris -> get a random Chuck Norris Joke •!! clear -> clear chat log"
-        KEY_RESPONSE = text
 
     elif text.startswith("!! translate "):
         try:
@@ -61,7 +59,6 @@ def commands(text):
     elif text == "!! clear":
         clear_data()
         text = ""
-        KEY_RESPONSE = text
 
     elif text == "!! norris":
         try:
@@ -77,10 +74,8 @@ def commands(text):
 
     elif text.startswith("!! "):
         text = " Not a valid command"
-        KEY_RESPONSE = text
 
     else:
-        KEY_RESPONSE = text
         return text
 
     return text
