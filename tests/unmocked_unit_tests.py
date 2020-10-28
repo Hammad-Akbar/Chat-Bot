@@ -79,7 +79,7 @@ class ChatbotTestCase(unittest.TestCase):
                 KEY_RESPONSE: " Not a valid command",
             },
         ]
-        
+
         self.message_test_params = [
             {
                 KEY_INPUT: "hello",
@@ -123,7 +123,7 @@ class ChatbotTestCase(unittest.TestCase):
 
         for test in self.failure_test_params:
             response = app.commands(test[KEY_INPUT])
-            expected = test[KEY_RESPONSE]    
+            expected = test[KEY_RESPONSE]
 
             self.assertIsNot(response, expected)
 

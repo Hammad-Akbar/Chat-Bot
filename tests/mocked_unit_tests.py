@@ -1,11 +1,14 @@
 """ Testing mocked responses in app.py """
 
-import unittest, unittest.mock as mock
+import unittest
+import unittest.mock as mock
 import sys
-import app
-import models
 from os.path import dirname, join
 sys.path.insert(1, join(dirname(__file__), '../'))
+
+import app
+import models
+
 from app import MESSAGES_RECEIVED_CHANNEL
 from models import AuthUserType
 
