@@ -79,6 +79,17 @@ class ChatbotTestCase(unittest.TestCase):
                 KEY_RESPONSE: " Not a valid command",
             },
         ]
+        
+        self.message_test_params = [
+            {
+                KEY_INPUT: "hello",
+                KEY_RESPONSE: "hello",
+            },
+            {
+                KEY_INPUT: " !! about",
+                KEY_RESPONSE: " !! about",
+            },
+        ]
 
     def test_command_message_success(self):
         """ running tests on correct messages """
@@ -88,6 +99,14 @@ class ChatbotTestCase(unittest.TestCase):
             expected = test[KEY_RESPONSE]
 
             self.assertEqual(response, expected)
+
+    def test_command_message_success_almost(self):
+        """ running tests on correct messages if close """
+
+        for test in self.success_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
             self.assertAlmostEqual(response, expected)
 
     def test_command_message_failure(self):
@@ -98,6 +117,74 @@ class ChatbotTestCase(unittest.TestCase):
             expected = test[KEY_RESPONSE]
 
             self.assertNotEqual(response, expected)
+
+    def test_command_message_failure_not(self):
+        """ running tests on incorrect messages if not same """
+
+        for test in self.failure_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]    
+
+            self.assertIsNot(response, expected)
+
+    def test_command_is_message_success(self):
+        """ running tests to see if message type is string or not """
+
+        for test in self.success_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertIsInstance(response, str)
+            self.assertIsInstance(expected, str)
+
+    def test_command_is_not_message_success(self):
+        """ running tests to see if message type is string or not """
+
+        for test in self.success_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertNotIsInstance(response, dict)
+            self.assertNotIsInstance(expected, dict)
+
+    def test_command_is_message_failure(self):
+        """ running tests to see if message type is string or not """
+
+        for test in self.failure_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertIsInstance(response, str)
+            self.assertIsInstance(expected, str)
+
+    def test_command_is_not_message_failure(self):
+        """ running tests to see if message type is string or not """
+
+        for test in self.failure_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertNotIsInstance(response, dict)
+            self.assertNotIsInstance(expected, dict)
+
+    def test_valid_message(self):
+        """ running tests to see if message type is string or not """
+
+        for test in self.success_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertIsNotNone(response, dict)
+            self.assertIsNotNone(expected, dict)
+
+    def test_command_message_success_normal(self):
+        """ running tests on correct messages if user sends to another """
+
+        for test in self.message_test_params:
+            response = app.commands(test[KEY_INPUT])
+            expected = test[KEY_RESPONSE]
+
+            self.assertIs(response, expected)
 
 if __name__ == '__main__':
     unittest.main()

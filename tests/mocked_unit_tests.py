@@ -79,13 +79,6 @@ class TestCase(unittest.TestCase):
             with mock.patch('flask_socketio.SocketIO.on', self.mock_push_new_user_to_db):
                 app.on_new_google_user(test)
 
-    def test_on_new_message_failure(self):
-        """ testing on new message  """
-
-        for test in self.failure_test_params:
-            with mock.patch('flask_sqlalchemy.SignallingSession.add', self.mock_session_add):
-                app.on_new_message(test)
-
     def test_emit_failure_channel(self):
         """ running tests on socketio.emit """
 
@@ -105,6 +98,20 @@ class TestCase(unittest.TestCase):
                     app.emit_all_messages(test['connected'])
                 except ValueError as err:
                     self.fail(err)
+
+    def test_on_new_message_failure(self):
+        """ testing on new message  """
+
+        for test in self.failure_test_params:
+            with mock.patch('flask_sqlalchemy.SignallingSession.add', self.mock_session_add):
+                app.on_new_message(test)
+
+    def test_push_new_user_to_db_failure(self):
+        """ testing on_new_google_user """
+
+        for test in self.failure_test_params:
+            with mock.patch('flask_socketio.SocketIO.on', self.mock_push_new_user_to_db):
+                app.on_new_google_user(test)
 
     def mock_emit_messages_channel(self, channel, data):
         """ mock emit messages when emitting to a channel"""
