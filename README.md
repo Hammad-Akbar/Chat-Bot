@@ -1,5 +1,7 @@
 # The Chat Bot 
 
+Heroku Link: https://the-chatter-box-bot-v2.herokuapp.com/
+
 The goal of this project was to utilize functional React and create a chat box with multiple commands. 
 
 
@@ -119,7 +121,7 @@ After you create your heroku app, you will need to push the database to heroku:
 3. When making changes, need to rerun, `coverage run -m --source=. unittest tests/*.py && coverage html`
 
 
-#### This repository can be cloned by running the following command: `git clone https://github.com/NJIT-CS490/project2-m3-haa38/`
+#### This repository can be cloned by running the following command: `git clone https://github.com/Hammad-Akbar/Chat-Bot/`
 
 
 ## Aknowledgments and Issues:
